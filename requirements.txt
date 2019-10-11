@@ -1,0 +1,10 @@
+Django>=2.1.10,<2.2.6
+djangorestframework>=3.9.5,<3.10.3
+redis>=3.3.5,<3.3.8
+psycopg2>=2.8.0,<2.8.3
+django-filters
+django-filter
+requests
+pymongo
+mongoengine
+django-rest-framework-mongoengine

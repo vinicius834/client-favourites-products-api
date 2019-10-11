@@ -1,0 +1,18 @@
+
+docker-compose build --no-cache
+
+docker-compose up --force-recreate
+
+
+
+docker exec -it client-favourites-products-api sh -c 'python manage.py drf_create_token test'
+
+copy the generated token
+
+- header
+key: Authorization
+value: token <generated token>
+
+
+
+docker-compose run client_favourites_products_api sh -c 'python manage.py test'

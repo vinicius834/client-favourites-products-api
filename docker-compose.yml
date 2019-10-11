@@ -1,0 +1,41 @@
+version: "3"
+services:
+  app:
+    container_name: client-favourites-products-api
+    build:
+      context: .
+    environment:
+      CACHE_EXPIRE: 7200
+    ports:
+      - 8000:8000
+    volumes:
+      - ./client-favourites-products-api:/client-favourites-products-api
+    command: >
+      sh -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    restart: on-failure
+    depends_on:
+      - mongo
+      - redis
+
+  mongo:
+    container_name: mongo
+    image: mongo
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGODB_DATABASE=api
+    ports:
+      - 27017:27017
+    volumes:
+      - ./mongo_data/db:/data/db
+
+  redis:
+    container_name: redis
+    image: redis:latest
+    ports:
+      - 6379:6379
+    volumes:
+      - ./redis_data:/data
+
+volumes:
+  redis_data:
+  mongo_data:
