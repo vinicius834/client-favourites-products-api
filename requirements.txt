@@ -7,3 +7,4 @@ requests
 pymongo
 mongoengine
 django-rest-framework-mongoengine
+django-test-addons

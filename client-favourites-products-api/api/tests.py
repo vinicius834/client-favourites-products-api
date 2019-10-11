@@ -4,18 +4,36 @@ from rest_framework.authtoken.models import Token
 from http import HTTPStatus
 from .models import Client
 import json
+from mongoengine.connection import _get_db
+#import pymongo
 
-class ClientCreateListView(APITestCase):
+class BaseTest(APITestCase):
+    def mongo_conn(self):
+        pass
+
+    def close(self):
+        _get_db()['test']['test'].drop()
+
+class ClientCreateListView(BaseTest):
+
     def setUp(self):
+        self.db = _get_db()
         self.user = User.objects.create_user(username='test')
         token = Token.objects.create(key='test_token', user=self.user)
         self.api_client = APIClient()
         self.api_client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)
-        self.client = Client.objects.create(name='test', email='test@test.com')
+        try:
+            self.client = Client.objects.get(email='test@test.com')
+        except Exception:
+            self.client = Client.objects.create(name='test', email='test@test.com')
+
+    def tearDown(self):
+        self.close()
 
     def test_post(self):
-        data = { "name": "fulano", "email": "fulano@gmail.com" }
-        response = self.api_client.post('/client/', data)
+        self.db['client'].drop()
+        data =  { "name": "fulano", "email": "fulano@gmail.com", 'favourites_products': [] }
+        response = self.api_client.post('/client/', data, format='json')
         client = json.loads(response.content.decode('utf-8'))
         self.assertEqual(client['status'], HTTPStatus.CREATED)
         self.assertEqual(client['content']['name'], data['name'])
@@ -26,7 +44,8 @@ class ClientCreateListView(APITestCase):
         self.assertTrue(len(response.data) > 0)
 
     def test_put(self):
-        response = self.api_client.put('/client/' + str(self.client.id), {'name':'test1'}, format='json')
+        _get_db()['test']['client'].drop()
+        response = self.api_client.put('/client/' + str(self.client.id), {'name':'test_put'}, format='json')
         client_after = Client.objects.get(id=self.client.id)
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertFalse(self.client.name == client_after.name)
@@ -73,12 +92,18 @@ class ProductDetailView(APITestCase):
         response = self.api_client.get(url)
         self.assertEqual(response.status_code, HTTPStatus.OK)
 
-class ProductListView(APITestCase):
+class ProductListView(BaseTest):
     def setUp(self):
         self.user = User.objects.create_user(username='test')
         token = Token.objects.create(key='test_token', user=self.user)
         self.api_client = APIClient()
         self.api_client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)
+        try:
+            self.client = Client.objects.get(email='test1@test.com')
+        except Exception:
+            self.client = Client.objects.create(name='test', email='test1@test.com')
+
+
 
     def test_list_products_by_page(self):
         response = self.api_client.get('/product/1')

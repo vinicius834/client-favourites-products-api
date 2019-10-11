@@ -44,10 +44,10 @@ class ClientCreateListView(ListCreateAPIView):
     def post(self, request):
         data = request.data
         client_serialized = ClientSerializer(data=data)
+       # print("fuck: ", client_serialized)
         res = None
         if client_serialized.is_valid():
             client_serialized.save()
-
         else:
             return JsonResponse({STATUS: HTTPStatus.BAD_REQUEST, ERROR: client_serialized.errors})
         return JsonResponse({STATUS: HTTPStatus.CREATED, CONTENT: client_serialized.data})
