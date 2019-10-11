@@ -49,10 +49,13 @@ PATCH localhost:8000/client/<client_id>/favourite_product/ # add favourite produ
 
 DELETE localhost:8000/client/<client_id>/favourite_product/<product_id> # remove product from client favourite list
 
-
 ```
 
+## Run tests
 
+```bash
+docker exec -it client-favourites-products-api sh -c 'python manage.py drf_create_token test'
+```
 
 ## License
 [GNU](http://www.gnu.org/licenses/gpl-3.0.txt)
