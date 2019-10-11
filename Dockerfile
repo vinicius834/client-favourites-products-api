@@ -13,7 +13,7 @@ RUN \
 
 RUN mkdir /client-favourites-products-api
 WORKDIR /client-favourites-products-api
-COPY ./* /client-favourites-products-api
+COPY ./client-favourites-products-api /client-favourites-products-api
 
 RUN adduser -D user
 USER user

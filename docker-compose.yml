@@ -1,6 +1,6 @@
 version: "3"
 services:
-  client-favourites-products-api:
+  app:
     container_name: client-favourites-products-api
     build:
       context: .
