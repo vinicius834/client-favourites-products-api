@@ -46,17 +46,18 @@ class ClientCreateListView(ListCreateAPIView):
         client_serialized = ClientSerializer(data=data)
         res = None
         if client_serialized.is_valid():
-            try:
-                client_serialized.save()
-            except NotUniqueError:
-                return JsonResponse({STATUS: HTTPStatus.BAD_REQUEST, ERROR: DUPLICATED_EMAIL})
+            client_serialized.save()
+
+        else:
+            return JsonResponse({STATUS: HTTPStatus.BAD_REQUEST, ERROR: client_serialized.errors})
         return JsonResponse({STATUS: HTTPStatus.CREATED, CONTENT: client_serialized.data})
 
 class ClientDetailView(GenericViewSet, PatchModelMixin, RetrieveUpdateDestroyAPIView):
     permission_classes = (IsAuthenticated,)
     queryset = Client.objects.all()
     serializer_class = ClientSerializer
-    lookup_fields = ('client_id', 'product_id')
+    lookup_fields = ('id', 'client_id', 'product_id')
+    filter_fields = ['id']
 
     def put(self, request, *args, **kwargs):
         client_id = kwargs['client_id']
@@ -100,6 +101,15 @@ class ClientDetailView(GenericViewSet, PatchModelMixin, RetrieveUpdateDestroyAPI
         except Exception:
             return JsonResponse({STATUS: HTTPStatus.BAD_REQUEST})
         return JsonResponse({STATUS: HTTPStatus.OK})
+
+    def delete(self, request, *args, **kwargs):
+        client_id = kwargs['client_id']
+        client = self.search_client(client_id)
+        if client is None:
+            return JsonResponse({STATUS: HTTPStatus.NOT_FOUND, ERROR: CLIENT + ' ' + HTTPStatus.NOT_FOUND.phrase})
+        client.delete()
+        return JsonResponse({STATUS: HTTPStatus.OK, CLIENT: ClientSerializer(client).data})
+
 
     def search_client(self, client_id):
         client = None

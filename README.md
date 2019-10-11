@@ -16,7 +16,7 @@ docker-compose up --force-recreate
 ## Create Authentication Token
 
 ```bash
-docker exec -it client-favourites-products-api sh -c 'python manage.py drf_create_token test'
+docker exec -it client-favourites-products-api sh -c 'python manage.py createsuperuser --username test --email test@example.com --no-input && python manage.py drf_create_token test'
 ```
 
 ## Usage
