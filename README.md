@@ -54,7 +54,7 @@ DELETE localhost:8000/client/<client_id>/favourite_product/<product_id> # remove
 ## Run tests
 
 ```bash
-docker exec -it client-favourites-products-api sh -c 'python manage.py drf_create_token test'
+docker exec -it client-favourites-products-api sh -c 'python manage.py test --noinput --settings=api.test_settings'
 ```
 
 ## License
