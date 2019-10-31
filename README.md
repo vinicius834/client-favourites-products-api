@@ -1,7 +1,5 @@
 # Client Favourites Products API
 
-Foobar is a Python library for dealing with word pluralization.
-
 ## Build
 
 ```bash
