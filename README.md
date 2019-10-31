@@ -55,5 +55,3 @@ DELETE localhost:8000/client/<client_id>/favourite_product/<product_id> # remove
 docker exec -it client-favourites-products-api sh -c 'python manage.py test --noinput --settings=api.test_settings'
 ```
 
-## License
-[GNU](http://www.gnu.org/licenses/gpl-3.0.txt)
